@@ -1,4 +1,3 @@
-version: "3.9"
 
 ########################### NETWORKS
 networks:
@@ -19,10 +18,11 @@ include:
   # PREFIX udms = Ultimate Docker Media Server
   # HOSTNAME=udms - defined in .env
   # CORE
-  - compose/$HOSTNAME/socket-proxy.yml
+  - compose/misc/socket-proxy.yml
   - compose/$HOSTNAME/portainer.yml
   - compose/$HOSTNAME/dozzle.yml
   - compose/$HOSTNAME/homepage.yml
+  - compose/$HOSTNAME/plex.yml
   - compose/$HOSTNAME/plex.yml
   # DOWNLOADERS
   - compose/$HOSTNAME/sabnzbd.yml
@@ -30,3 +30,14 @@ include:
   # PVRS
   - compose/$HOSTNAME/radarr.yml
   - compose/$HOSTNAME/sonarr.yml
+  - compose/$HOSTNAME/prowlarr.yml
+  - compose/$HOSTNAME/bazarr.yml
+  - compose/$HOSTNAME/overseerr.yml
+  # Home Automation
+  - compose/haas/homeassistant.yml
+  # Miscelanous
+  - compose/misc/glances.yml
+  - compose/misc/speedtest_tracker.yml
+  # VPN
+  - compose/misc/wireguard.yml
+  

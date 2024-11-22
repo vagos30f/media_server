@@ -4,6 +4,7 @@ services:
     image: plexinc/pms-docker:plexpass
     container_name: plex
     networks:
+      - socket_proxy
       - default
     security_opt:
       - no-new-privileges:true
@@ -24,7 +25,7 @@ services:
     volumes:
       - $DOCKERDIR/appdata/plex:/config
       - $DATADIR/data/media:/data/media1 # Media Folder 1
-      #- $DATADIR/data2/media:/data/media2 # Media Folder 2
+      #- $DATADIR/data/media2:/data/media2 # Media Folder 2
       - /dev/shm:/data/transcode # Offload transcoding to RAM if you have enough RAM
     environment:
       TZ: $TZ

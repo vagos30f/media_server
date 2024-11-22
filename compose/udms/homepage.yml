@@ -14,7 +14,11 @@ services:
       - "3000:3000"
     volumes:
       - $DOCKERDIR/appdata/homepage:/app/config
+      - $DOCKERDIR/.env:/app/config/.env
+      - /var/run/docker.sock:/var/run/docker.sock:ro # (optional) For docker integrations
     environment:
       TZ: $TZ
       PUID: $PUID
       PGID: $PGID
+    env_file:
+      - .env

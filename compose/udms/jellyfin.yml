@@ -1,0 +1,15 @@
+
+services:
+  jellyfin:
+    image: ghcr.io/linuxserver/jellyfin
+    container_name: jellyfin
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Copenhagen
+    ports:
+      - 8096:8096
+    volumes:
+      - ~/docker/appdata/jellyfin:/config
+      - ~/Downloads/p:/movies
+    restart: unless-stopped   

@@ -8,6 +8,7 @@ services:
     restart: unless-stopped
     # profiles: ["apps", "downloads", "all"]
     networks:
+      - socket_proxy
       - default
     ports:
       - "8084:8080"

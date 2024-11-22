@@ -8,6 +8,7 @@ services:
     restart: "no"
     # profiles: ["media", "arrs", "all"]
     networks:
+      - socket_proxy
       - default
     ports:
       - "7878:7878"
