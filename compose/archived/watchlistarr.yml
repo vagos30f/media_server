@@ -1,0 +1,15 @@
+services:
+  watchlistarr:
+    image: nylonee/watchlistarr
+    restart: unless-stopped
+    environment:
+      SONARR_API_KEY: $SONARR_KEY
+      RADARR_API_KEY: $RADARR_KEY
+      PLEX_TOKEN: $PLEX_TOKEN
+    volumes:
+      - $DOCKERDIR/appdata/watchlistarr:/app/config
+    networks:
+      - default
+      - socket_proxy
+    ports:
+      - 5056:5056

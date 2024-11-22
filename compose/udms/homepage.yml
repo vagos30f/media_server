@@ -1,0 +1,24 @@
+services:
+  # Homepage - Application Dashboard
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    # profiles: ["apps", "all"]
+    networks:
+      - socket_proxy
+      - default
+    ports:
+      - "3000:3000"
+    volumes:
+      - $DOCKERDIR/appdata/homepage:/app/config
+      - $DOCKERDIR/.env:/app/config/.env
+      - /var/run/docker.sock:/var/run/docker.sock:ro # (optional) For docker integrations
+    environment:
+      TZ: $TZ
+      PUID: $PUID
+      PGID: $PGID
+    env_file:
+      - .env

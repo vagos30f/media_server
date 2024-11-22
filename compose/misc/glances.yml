@@ -1,0 +1,27 @@
+services:
+  # Glances - System Information
+  glances:
+    image: nicolargo/glances:latest-full
+    container_name: glances
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    # profiles: ["monitoring", "all"]
+    # privileged: true # Only for VM
+    # network_mode: host
+    networks:
+      - socket_proxy
+      - default
+    ports:
+      - "61208:61208"
+    pid: host
+    volumes:
+      - $DOCKERDIR/appdata/glances/glances.conf:/glances/conf/glances.conf # Use this if you want to add a glances.conf file
+      - $DATADIR/data:/data/data:ro
+      # - $DOCKERDIR:/data/docker:ro
+      # - /var/run/docker.sock:/var/run/docker.sock:ro # Use Docker Socket Proxy instead for improved security
+    environment:
+      # GLANCES_OPT: "-C /glances/conf/glances.conf --quiet --export influxdb"
+      # GLANCES_OPT: "--export influxdb"
+      GLANCES_OPT: "-w"
+      DOCKER_HOST: tcp://socket-proxy:2375

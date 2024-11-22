@@ -1,0 +1,20 @@
+---
+services:
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    networks:
+      - socket_proxy
+      - default
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+    volumes:
+      - $DOCKERDIR/appdata/bazarr/config:/config
+      - $DATADIR/data/media/movies:/movies #optional
+      - $DATADIR/data/media/shows:/tv #optional
+      - /path/to/tv:/tv #optional
+    ports:
+      - 6767:6767
+    restart: unless-stopped

@@ -1,0 +1,16 @@
+#!/bin/bash
+
+server() {
+  local action=$1
+  local service=$2
+
+  if [ "$action" == "up" ]; then
+    sudo docker compose -f ~/docker/docker-compose-udms.yml $action $service -d
+  else
+    sudo docker compose -f ~/docker/docker-compose-udms.yml $action $service
+  fi
+}
+
+# Example usage:
+# server up prowlarr
+# server down qbittorrent
