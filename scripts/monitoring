@@ -1,0 +1,17 @@
+#!/bin/bash
+
+monitoring() {
+  local action=$1
+  local service=$2
+
+  if [ "$action" == "up" ]; then
+    sudo docker compose -f ~/docker/compose/monitoring/docker-compose-monitoring.yml $action $service -d
+  else
+    sudo docker compose -f ~/docker/compose/monitoring/docker-compose-monitoring.yml $action $service
+  fi
+}
+
+monitoring $1 $2
+# Example usage:
+# server up prowlarr
+# server down qbittorrent
