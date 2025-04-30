@@ -11,9 +11,9 @@ services:
       - PGID=$PGID
       - TZ=$TZ
     volumes:
-      - $DOCKERDIR/appdata/bazarr/config:/config
-      - $DATADIR/data/media/movies:/movies #optional
-      - $DATADIR/data/media/shows:/tv #optional
+      - $APPDATADIR/bazarr/config:/config
+      - $DATADIR2/Movies:/movies #optional
+      - $DATADIR2/Tv:/tv #optional
       - /path/to/tv:/tv #optional
     ports:
       - 6767:6767

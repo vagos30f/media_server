@@ -13,7 +13,7 @@ services:
     ports:
       - "8084:8080"
     volumes:
-      - $DOCKERDIR/appdata/sabnzbd:/config
+      - $APPDATADIR/sabnzbd:/config
       - $DATADIR/downloads:/data/downloads
     environment:
       PUID: $PUID

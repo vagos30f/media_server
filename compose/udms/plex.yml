@@ -8,7 +8,7 @@ services:
       - default
     security_opt:
       - no-new-privileges:true
-    restart: "no"
+    restart: unless-stopped
     # profiles: ["media", "all"]
     devices:
       - /dev/dri:/dev/dri # for hardware transcoding
@@ -23,9 +23,9 @@ services:
       - "32413:32413/udp"
       - "32414:32414/udp"
     volumes:
-      - $DOCKERDIR/appdata/plex:/config
+      - $APPDATADIR/plex:/config
       - $DATADIR/data/media:/data/media1 # Media Folder 1
-      #- $DATADIR/data/media2:/data/media2 # Media Folder 2
+      - $DATADIR2/:/data/media # Media Folder 2
       - /dev/shm:/data/transcode # Offload transcoding to RAM if you have enough RAM
     environment:
       TZ: $TZ

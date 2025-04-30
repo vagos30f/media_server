@@ -14,7 +14,7 @@ services:
     ports:
       - "8079:8080"
     volumes:
-      - $DOCKERDIR/appdata/qbittorrent:/config
+      - $APPDATADIR/qbittorrent:/config
       - $DATADIR/downloads:/data/downloads # Ensure that downloads folder is set to /data/downloads in qBittorrent
     environment:
       TZ: $TZ

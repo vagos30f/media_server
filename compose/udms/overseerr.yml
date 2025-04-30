@@ -10,7 +10,7 @@ services:
       - PGID=$PGID
       - TZ=$TZ
     volumes:
-      - $DOCKERDIR/appdata/overseerr/config:/config
+      - $APPDATADIR/overseerr/config:/config
     ports:
       - 5055:5055
     restart: unless-stopped

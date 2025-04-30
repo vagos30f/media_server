@@ -9,7 +9,8 @@ networks:
     ipam:
       config:
         - subnet: 192.168.91.0/24
-########################### SECRETS
+
+########################### SECRETS 
 secrets:
   plex_claim:
     file: $DOCKERDIR/secrets/plex_claim
@@ -38,6 +39,7 @@ include:
   # Miscelanous
   - compose/misc/glances.yml
   - compose/misc/speedtest_tracker.yml
+  - compose/misc/watchtower.yml
   # VPN
   - compose/misc/wireguard.yml
   

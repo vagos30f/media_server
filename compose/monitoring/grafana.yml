@@ -1,0 +1,14 @@
+services:
+  grafana:
+    image: docker.io/grafana/grafana-oss:11.3.1
+    container_name: grafana
+    ports:
+      - "3030:3000"
+    volumes:
+      - $APPDATADIR/grafana/:/var/lib/grafana
+    restart: unless-stopped
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+    user: $PUID:$PGID

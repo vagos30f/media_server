@@ -1,14 +1,14 @@
 services:
     speedtest:
         container_name: speedtest
-        image: henrywhitaker3/speedtest-tracker
+        image: henrywhitaker3/speedtest-tracker:latest
         networks:
             - default
             - socket_proxy
         ports:
             - 8765:80
         volumes:
-            - $DOCKERDIR/appdata/speedtest:/config
+            - $APPDATADIR/speedtest:/config
         environment:
             - TZ=$TZ
             - PGID=1000

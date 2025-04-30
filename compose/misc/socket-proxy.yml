@@ -2,11 +2,11 @@ services:
   # Docker Socket Proxy - Security Enchanced Proxy for Docker Socket
   socket-proxy:
     container_name: socket-proxy
-    image: tecnativa/docker-socket-proxy
+    image: tecnativa/docker-socket-proxy:latest
     security_opt:
       - no-new-privileges:true
     restart: unless-stopped
-    #profiles: ["core", "all"]
+    # profiles: ["core", "all"]
     networks:
       socket_proxy:
         ipv4_address: 192.168.91.254 # You can specify a static IP    # privileged: true # true for VM. False for unprivileged LXC container.

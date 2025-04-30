@@ -1,0 +1,45 @@
+
+########################### NETWORKS
+networks:
+  default:
+    driver: bridge
+  socket_proxy:
+    name: socket_proxy
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.91.0/24
+
+########################### SECRETS
+secrets:
+  plex_claim:
+    file: $DOCKERDIR/secrets/plex_claim
+include:
+  ########################### SERVICES
+  # PREFIX udms = Ultimate Docker Media Server
+  # HOSTNAME=udms - defined in .env
+  # CORE
+  - $DOCKERDIR/compose/misc/socket-proxy.yml
+  - $UDMSDIR/portainer.yml
+  - $UDMSDIR/dozzle.yml
+  - $UDMSDIR/homepage.yml
+  - $UDMSDIR/plex.yml
+  - $UDMSDIR/plex.yml
+  # DOWNLOADERS
+  - $UDMSDIR/sabnzbd.yml
+  - $UDMSDIR/qbittorrent.yml
+  # PVRS
+  - $UDMSDIR/radarr.yml
+  - $UDMSDIR/sonarr.yml
+  - $UDMSDIR/prowlarr.yml
+  - $UDMSDIR/bazarr.yml
+  - $UDMSDIR/overseerr.yml
+  # Home Automation
+  - $DOCKERDIR/compose/haas/homeassistant.yml
+  # Miscelanous
+  - $DOCKERDIR/compose/misc/glances.yml
+  - $DOCKERDIR/compose/misc/speedtest_tracker.yml
+  - $DOCKERDIR/compose/misc/watchtower.yml
+  # VPN
+  - $DOCKERDIR/compose/udms/jellyfin.yml
+  

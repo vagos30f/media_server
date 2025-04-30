@@ -17,4 +17,4 @@ services:
       - "9696:9696"
       - "8191:8191"
     volumes:
-      - $DOCKERDIR/appdata/prowlarr:/config
+      - $APPDATADIR/prowlarr:/config

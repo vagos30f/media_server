@@ -1,0 +1,24 @@
+
+# ########################### NETWORKS
+# networks:
+#   default:
+#     driver: bridge
+#   socket_proxy:
+#     name: socket_proxy
+#     driver: bridge
+#     ipam:
+#       config:
+#         - subnet: 192.168.91.0/24
+
+# ########################### SECRETS
+# secrets:
+#   plex_claim:
+#     file: $DOCKERDIR/secrets/plex_claim
+include:
+  ########################### SERVICES
+  - $WORKINGDIR/grafana.yml
+  - $WORKINGDIR/prometheus.yml
+  - $WORKINGDIR/node-exporter.yml
+  - $WORKINGDIR/cadvisor.yml
+  - $WORKINGDIR/tautulli.yml
+

@@ -13,12 +13,15 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - $DOCKERDIR/appdata/homepage:/app/config
+      - $APPDATADIR/homepage:/app/config
       - $DOCKERDIR/.env:/app/config/.env
+      - $DATADIR2:/data/data2:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro # (optional) For docker integrations
     environment:
       TZ: $TZ
       PUID: $PUID
       PGID: $PGID
-    env_file:
-      - .env
+      HOMEPAGE_ALLOWED_HOSTS: 192.168.22.144:3000
+
+
+   

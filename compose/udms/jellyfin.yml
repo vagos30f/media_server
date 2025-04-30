@@ -4,12 +4,12 @@ services:
     image: ghcr.io/linuxserver/jellyfin
     container_name: jellyfin
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID=0
+      - PGID=0
       - TZ=Europe/Copenhagen
     ports:
       - 8096:8096
     volumes:
-      - ~/docker/appdata/jellyfin:/config
-      - ~/Downloads/p:/movies
+      - /home/vagos/docker/appdata/jellyfin:/config
+      - /home/vagos/Downloads/p/:/movies
     restart: unless-stopped   

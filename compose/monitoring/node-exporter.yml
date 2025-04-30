@@ -1,0 +1,16 @@
+services:
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:v1.8.2
+    container_name: node_exporter
+    command: "--path.rootfs=/host"
+    pid: host
+    restart: unless-stopped
+    # ports:
+    #   - 9000:9000/tcp
+    volumes:
+      - /:/host:ro,rslave
+    # environment:
+    #   - PUID=$PUID
+    #   - PGID=$PGID
+    #   - TZ=$TZ
+    # user: $PUID:$PGID

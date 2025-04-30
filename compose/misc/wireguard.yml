@@ -6,7 +6,7 @@ services:
       # - PASSWORD=$WG_PASSWORD
       # - WG_HOST=$PUB_IP
     volumes:
-      - $DOCKERDIR/appdata/wireguard/config:/config
+      - $APPDATADIR/wireguard/config:/config
       - /lib/modules:/lib/modules #optional
     ports:
       - "51820:51820/udp"
