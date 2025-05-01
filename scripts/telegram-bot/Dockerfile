@@ -6,5 +6,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY bot.py .
+COPY quotes.py .
+
 COPY session.session .
 CMD ["python", "bot.py"]
