@@ -6,7 +6,7 @@ secrets/plex_claim
 secrets/*
 .env
 .env.save
-
+venv/*
 secrets/*
 #  By mistake i put the configs of bazarr in the root and now it keeps creating it ! just ignore it for now 
 config/* 

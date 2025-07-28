@@ -21,7 +21,6 @@ services:
       TZ: $TZ
       PUID: $PUID
       PGID: $PGID
-      HOMEPAGE_ALLOWED_HOSTS: 192.168.22.144:3000
-
+      HOMEPAGE_ALLOWED_HOSTS: media.server:3000,192.168.22.144:3000,localhost,127.0.0.1
 
    

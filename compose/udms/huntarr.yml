@@ -1,0 +1,11 @@
+services:
+  huntarr:
+    image: ghcr.io/plexguide/huntarr:latest
+    container_name: huntarr
+    restart: unless-stopped
+    ports:
+      - "9705:9705"
+    volumes:
+      - $APPDATADIR/huntarr:/config
+    environment:
+      - TZ=$TZ

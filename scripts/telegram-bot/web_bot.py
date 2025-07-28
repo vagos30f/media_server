@@ -1,3 +1,4 @@
+import re
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -23,8 +24,12 @@ URL = os.getenv("URL")
 from selenium.webdriver.chrome.options import Options
 
     
-class SelenimumElement:
-    def __init__(self, element: WebElement):
+class SeleniumElement:
+    """
+    A wrapper class for Selenium WebElement to provide additional functionalities.
+    """
+    def __init__(self, driver:webdriver.Chrome,  element: WebElement):
+        self.driver = driver
         self.element = element
         self.text = element.text
         self.parent = element.parent
@@ -34,30 +39,136 @@ class SelenimumElement:
         self.name = element.get_attribute("name")
         self.value = element.get_attribute("value")
 
-    def find_element(self, by: By, value: str, timeout=10):
+    def find_element(self, by: By, value: str, timeout: int = 10) -> 'SeleniumElement':
+        """
+        Finds a child element within this element.
+
+        Args:
+            by: The By strategy (e.g., By.ID, By.XPATH).
+            value: The selector string for the element.
+            timeout: Maximum time to wait for the element to be present.
+
+        Returns:
+            A SeleniumElement object if found.
+
+        Raises:
+            Exception: If the element is not found within the timeout.
+        """
         try:
-            element = WebDriverWait(self.element, timeout).until(
+            element = WebDriverWait(self.driver, timeout).until(
                 EC.presence_of_element_located((by, value))
             )
-            return SelenimumElement(element)
+            return SeleniumElement(self.driver, element)
         except TimeoutException:
-            raise Exception(f"Element not found: {value}")
+            raise Exception(f"Child element not found: {value} within parent {self.tag_name} (ID: {self.id})")
 
-    def find_elements(self, *args, **kwargs):
-        return self.element.find_elements(*args, **kwargs)
+    def find_elements(self, by: By, value: str) -> list['SeleniumElement']:
+        """
+        Finds all child elements within this element.
+
+        Args:
+            by: The By strategy (e.g., By.ID, By.XPATH).
+            value: The selector string for the elements.
+
+        Returns:
+            A list of SeleniumElement objects.
+        """
+        elements = self.element.find_elements(by, value)
+        return [SeleniumElement(self.driver, el) for el in elements]
 
     def send_keys(self, *args, **kwargs):
+        """Sends keys to the wrapped WebElement."""
         return self.element.send_keys(*args, **kwargs)
 
-    def click(self):
+    def click(self, timeout:int=5) -> None:
+        """Performs a standard click on the wrapped WebElement."""
+        WebDriverWait(self.driver, timeout).until(EC.element_to_be_clickable(self.element))        
         return self.element.click()
 
-    def get_classes(self):
-        return self.element.get_attribute("class").split()
+    def get_classes(self) -> list[str]:
+        """Returns a list of class names of the element."""
+        class_attribute = self.element.get_attribute("class")
+        return class_attribute.split() if class_attribute else []
 
-    def exasecute_script(self, script, *args):
-        self.element.text
-        return self.element.execute_script(script, *args)
+    def execute_script(self, script: str, *args):
+        """
+        Executes a JavaScript script in the context of the wrapped WebElement.
+        Note: This requires access to the WebDriver instance.
+        """
+        # This method typically requires the driver, not just the element.
+        # It's usually better to call driver.execute_script directly.
+        # However, if you want to execute script *on* this element,
+        # you'd need the driver instance passed here or stored.
+        # For simplicity, this method might be better placed in MainController
+        # or require the driver as an argument.
+        # For now, it will use the element's internal execute_script if it exists,
+        # but a direct driver.execute_script is more common.
+        raise NotImplementedError("execute_script on WebElement directly is not common for general JS. "
+                                  "Consider using driver.execute_script and passing self.element as argument.")
+
+    def get_button(self, button_text)-> 'SeleniumElement':
+        buttons = self.driver.find_elements(By.TAG_NAME, "button")
+        for button in buttons:
+            if button.text == button_text:
+                return SeleniumElement(self.driver, button)
+        raise Exception(f"Button with text '{button_text}' not found")
+
+    def robust_click(self, timeout: int = 10) -> bool:
+        """
+        Attempts to click this WebElement using various robust strategies.
+        This method handles ElementClickInterceptedException by trying
+        to scroll the element into view and then using JavaScript click as fallback.
+
+        Args:
+            driver: The Selenium WebDriver instance, required for scrolling and JavaScript execution.
+            timeout: Maximum time to wait for the element to be clickable.
+
+        Returns:
+            True if the click was successful, False otherwise.
+        """
+        print(f"\nAttempting to robustly click element: <{self.tag_name}> (ID: '{self.id}', Class: '{self.class_name}', Text: '{self.text.strip()}')")
+        try:
+            # Strategy 1: Wait for element to be clickable using WebDriverWait
+            print("Strategy 1: Waiting for element to be clickable...")
+            WebDriverWait(self.driver, timeout).until(EC.element_to_be_clickable(self.element))
+            self.element.click()
+            print("Successfully clicked using WebDriverWait.")
+            return True
+        except ElementClickInterceptedException:
+            print("ElementClickInterceptedException caught. Trying alternative strategies.")
+            try:
+                # Strategy 2: Scroll into view and then click
+                print("Strategy 2: Scrolling element into view and clicking...")
+                self.driver.execute_script("arguments[0].scrollIntoView(true);", self.element)
+                time.sleep(0.5) # Give a small moment for scroll to complete
+                self.element.click()
+                print("Successfully clicked after scrolling into view.")
+                return True
+            except ElementClickInterceptedException:
+                print("ElementClickInterceptedException after scroll. Trying JavaScript click.")
+                # Strategy 3: Click using JavaScript
+                try:
+                    self.driver.execute_script("arguments[0].click();", self.element)
+                    print("Successfully clicked using JavaScript.")
+                    return True
+                except Exception as e:
+                    print(f"Failed to click with JavaScript: {e}")
+                    return False
+            except TimeoutException:
+                print(f"Timeout waiting for element to be clickable after scroll.")
+                return False
+            except Exception as e:
+                print(f"An unexpected error occurred during click attempt (Strategy 2/3): {e}")
+                return False
+        except TimeoutException:
+            print(f"Timeout waiting for element to be clickable.")
+            return False
+        except NoSuchElementException:
+            print(f"Element not found during robust click attempt.")
+            return False
+        except Exception as e:
+            print(f"An unexpected error occurred during robust click attempt (Strategy 1): {e}")
+            return False
 
 class MainController:
     def __init__(self, driver=None):
@@ -84,7 +195,7 @@ class MainController:
         username_input.send_keys(self.username)
         password_input.send_keys(self.password)
 
-        find_and_click_button(self.driver, "LOGIN")
+        self.get_button("LOGIN").click()
         time.sleep(5)
 
     def stop(self):
@@ -96,7 +207,7 @@ class MainController:
             element = WebDriverWait(self.driver, timeout).until(
                 EC.presence_of_element_located((by, value))
             )
-            return SelenimumElement(element)
+            return SeleniumElement(self.driver, element)
         except TimeoutException:
             raise Exception(f"Element not found: {value}")
 
@@ -106,38 +217,37 @@ class MainController:
                 lambda d: len(d.find_elements(by, value)) > 0
             )
             elements = self.driver.find_elements(by, value)
-            return [SelenimumElement(el) for el in elements]
+            return [SeleniumElement(self.driver, el) for el in elements]
         except TimeoutException:
             return []
 
+    def get_button(self, button_text)-> SeleniumElement:
+        buttons = self.driver.find_elements(By.TAG_NAME, "button")
+        for button in buttons:
+            if button.text == button_text:
+                return SeleniumElement(self.driver, button)
+        raise Exception(f"Button with text '{button_text}' not found")
 
-def find_and_click_button(element: WebElement, button_text):
-    buttons = element.find_elements(By.TAG_NAME, "button")
-    for button in buttons:
-        if button.text == button_text:
-            button.click()
-            return
-    raise Exception(f"Button with text '{button_text}' not found")
+    def scroll_to_element(self, element: SeleniumElement):
+        self.driver.execute_script("arguments[0].scrollIntoView(true);", element.element)
+        time.sleep(0.5)  # Small pause to allow scrolling to complete
 
-
-main_cntrl = MainController()
 def main():
     try:
+        main_cntrl = MainController()
         # 1. Go to the login page
         main_cntrl.start(URL, USERNAME, PASSWORD)
         main_cntrl.login()
 
-        find_and_click_button(main_cntrl.driver, "Futures")
-        time.sleep(4)
+        main_cntrl.get_button("Futures").click()
+        # time.sleep(4)
 
-
-        # app = main_cntrl.find_element(By.ID, "app")
-        # main_window = app.find_element(By.CLASS_NAME, "v-main__wrap")
         delivery_page = main_cntrl.find_element(
             By.CLASS_NAME, "delivery-page"
         )
 
-        # Fid invited me button
+        # Find invited me button
+        time.sleep(1)
         divs = delivery_page.find_elements(By.TAG_NAME, "div")
         invited_me_tab = None
         for div in divs:
@@ -147,20 +257,19 @@ def main():
                 break
         if invited_me_tab is None:
             raise Exception("Invited me Tab not found")
-        # Scroll element into view before clicking
-        main_cntrl.driver.execute_script(
-            "arguments[0].scrollIntoView(true);", invited_me_tab
-        )
-        time.sleep(1)  # Small pause to allow scrolling to complete
+        main_cntrl.scroll_to_element(invited_me_tab)
         invited_me_tab.click()
         list_box = delivery_page.find_element(By.CLASS_NAME, "list-box")
-        # find_and_click_button(list_box, "INITIATE FOLLOW")
 
-        main_cntrl.driver.execute_script(
-            "window.scrollTo(0, document.body.scrollHeight);"
-        )
-        find_and_click_button(list_box, "CONFIRM TO FOLLOW THE ORDER")
-        find_and_click_button(list_box, "CONFIRM")
+        list_box.get_button(
+            "CONFIRM TO FOLLOW THE ORDER"
+        ).robust_click()
+        
+        time.sleep(2)
+
+        list_box.get_button(
+            "CONFIRM"
+        ).robust_click()
 
     finally:
         main_cntrl.stop()

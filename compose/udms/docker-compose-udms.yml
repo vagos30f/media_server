@@ -24,13 +24,13 @@ include:
   - $UDMSDIR/dozzle.yml
   - $UDMSDIR/homepage.yml
   - $UDMSDIR/plex.yml
-  - $UDMSDIR/plex.yml
   # DOWNLOADERS
   - $UDMSDIR/sabnzbd.yml
   - $UDMSDIR/qbittorrent.yml
   # PVRS
   - $UDMSDIR/radarr.yml
   - $UDMSDIR/sonarr.yml
+  # - $UDMSDIR/huntarr.yml
   - $UDMSDIR/prowlarr.yml
   - $UDMSDIR/bazarr.yml
   - $UDMSDIR/overseerr.yml
