@@ -40,6 +40,7 @@ include:
   - compose/misc/glances.yml
   - compose/misc/speedtest_tracker.yml
   - compose/misc/watchtower.yml
+  - compose/misc/nginx.yml
   # VPN
   - compose/misc/wireguard.yml
   

@@ -40,6 +40,9 @@ include:
   - $DOCKERDIR/compose/misc/glances.yml
   - $DOCKERDIR/compose/misc/speedtest_tracker.yml
   - $DOCKERDIR/compose/misc/watchtower.yml
+  - $DOCKERDIR/compose/misc/nginx.yml
+  - $UDMSDIR/flaresolverr.yml
+
   # VPN
   - $DOCKERDIR/compose/udms/jellyfin.yml
   
