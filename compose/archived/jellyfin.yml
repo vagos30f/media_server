@@ -11,5 +11,4 @@ services:
       - 8096:8096
     volumes:
       - /home/vagos/docker/appdata/jellyfin:/config
-      - /home/vagos/Downloads/p/:/movies
     restart: unless-stopped   
