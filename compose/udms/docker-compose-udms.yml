@@ -42,7 +42,4 @@ include:
   - $DOCKERDIR/compose/misc/watchtower.yml
   - $DOCKERDIR/compose/misc/nginx.yml
   - $UDMSDIR/flaresolverr.yml
-
-  # VPN
-  - $DOCKERDIR/compose/udms/jellyfin.yml
   
